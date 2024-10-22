@@ -1,4 +1,6 @@
 import foodModel from "../models/foodModal.js";
+
+//The Node.js file system module used to interact with files, such as deleting an uploaded image.
 import fs from "fs";
 
 //add food item
