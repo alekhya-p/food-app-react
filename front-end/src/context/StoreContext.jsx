@@ -61,11 +61,11 @@ const StoreContextProvider = (props) => {
   // to prevent re-load of login page
   useEffect(() => {
     async function loadData() {
-      const tokenValue = localStorage.getItem("token");
+      // const tokenValue = localStorage.getItem("token");
       await fetchFoodList();
-      if (tokenValue) {
-        setToken(tokenValue);
-        await loadCartData(tokenValue);
+      if (localStorage.getItem("token")) {
+        setToken(localStorage.getItem("token"));
+        await loadCartData(localStorage.getItem("token"));
       }
     }
     loadData();

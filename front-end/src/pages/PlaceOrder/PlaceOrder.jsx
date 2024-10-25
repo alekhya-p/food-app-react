@@ -2,10 +2,13 @@ import React, { useContext, useState } from "react";
 import "./PlaceOrder.css";
 import { StoreContext } from "../../context/StoreContext";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const PlaceOrder = () => {
   const { getTotalCartAmount, token, food_list, cartItems, url } =
     useContext(StoreContext);
+
+  const navigate = useNavigate();
 
   const [data, setData] = useState({
     firstName: "",
@@ -40,6 +43,8 @@ const PlaceOrder = () => {
       items: orderItems,
       amount: getTotalCartAmount() + 2,
     };
+    console.log(orderData);
+    
     let response = await axios.post(url + "/api/order/place", orderData, {
       headers: token,
     });
@@ -57,7 +62,7 @@ const PlaceOrder = () => {
         <p className="title">Delivery Information</p>
         <div className="multi-fields">
           <input
-          required
+            required
             name="firstName"
             onChange={onChangeHandler}
             value={data.firstName}
@@ -65,7 +70,7 @@ const PlaceOrder = () => {
             placeholder="First Name"
           />
           <input
-          required
+            required
             name="lastName"
             onChange={onChangeHandler}
             value={data.lastName}
@@ -74,7 +79,7 @@ const PlaceOrder = () => {
           />
         </div>
         <input
-        required
+          required
           name="email"
           onChange={onChangeHandler}
           value={data.email}
@@ -82,7 +87,7 @@ const PlaceOrder = () => {
           placeholder="Email address"
         />
         <input
-        required
+          required
           name="street"
           onChange={onChangeHandler}
           value={data.street}
@@ -98,7 +103,7 @@ const PlaceOrder = () => {
             placeholder="City"
           />
           <input
-          required
+            required
             name="state"
             onChange={onChangeHandler}
             value={data.state}
@@ -108,7 +113,7 @@ const PlaceOrder = () => {
         </div>
         <div className="multi-fields">
           <input
-          required
+            required
             name="zipCode"
             onChange={onChangeHandler}
             value={data.zipCode}
@@ -116,7 +121,7 @@ const PlaceOrder = () => {
             placeholder="Zip Code"
           />
           <input
-          required
+            required
             name="country"
             onChange={onChangeHandler}
             value={data.country}
@@ -125,7 +130,7 @@ const PlaceOrder = () => {
           />
         </div>
         <input
-        required
+          required
           name="phone"
           onChange={onChangeHandler}
           value={data.phone}
@@ -154,7 +159,9 @@ const PlaceOrder = () => {
               </b>
             </div>
           </div>
-          <button type="submit">Proceed to payment</button>
+          <button type="submit">
+            Proceed to payment
+          </button>
         </div>
       </div>
     </form>
