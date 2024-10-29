@@ -7,36 +7,45 @@ import "dotenv/config";
 import cartRouter from "./routes/cartRoute.js";
 import orderRouter from "./routes/orderRoute.js";
 
-//app config
+// Swagger
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
+
+// App config
 const app = express();
 const port = 4000;
 
-//middleware
-
+// Middleware
 app.use(express.json());
 app.use(cors());
 
-//db connection
+// Database connection
 connectDB();
 
-//api endpoints
+// API endpoints
 app.use("/api/food", foodRouter);
-
-// create a spedific routes for assests inside uploads file
 app.use("/images", express.static("uploads"));
-
 app.use("/api/user", userRouter);
-
 app.use("/api/cart", cartRouter);
-
-app.use("api/order",orderRouter);
+app.use("/api/order", orderRouter); // Fixed the leading slash
 
 app.get("/", (req, res) => {
   res.send("API is working");
 });
 
+// Swagger setup
+const swaggerDocument = YAML.load('./swagger.yaml');
+
+console.log(swaggerDocument); // Log the loaded document
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
+
 app.listen(port, () => {
   console.log(`Server started on http://localhost:${port}`);
 });
-
-//mongodb+srv://alekhyapeddisetti:9440085568@cluster0.l4ki1.mongodb.net/?
