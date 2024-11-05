@@ -23,7 +23,6 @@ const LoginPopup = ({ setShowLogin }) => {
   };
 
   const onLogin = async (event) => {
-    debugger;
     event.preventDefault(); //to prevent the reload of page
     let newUrl = url;
     if (currState === "Login") {
@@ -32,9 +31,7 @@ const LoginPopup = ({ setShowLogin }) => {
       newUrl += "/api/user/register";
     }
 
-    // const response = await axios.post(newUrl,data);
     const response = await axios.post(newUrl,data)
-    console.log(response);
     
     if(response.data.success) {
       setToken(response.data.token);
@@ -45,11 +42,6 @@ const LoginPopup = ({ setShowLogin }) => {
       toast.error(response.data.message)
     }
   };
-
-  //For testing
-  // useEffect(() =>{
-  //     console.log(data);
-  // },[data])
 
   return (
     <div className="login-popup">
