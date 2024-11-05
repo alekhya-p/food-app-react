@@ -1,57 +1,52 @@
-import foodModel from "../models/foodModal.js";
-
 //The Node.js file system module used to interact with files, such as deleting an uploaded image.
 import fs from "fs";
+import {
+  addFoodData,
+  getFoodItem,
+  listFoodItems,
+  removeFoodItem,
+} from "../repositories/foodRepositories.js";
 
 //add food item
 const addFood = async (req, res) => {
+  if (!req.file) {
+    return res.status(400).send("no file uploaded");
+  }
 
-    // console.log("File received:", req.file);  // Log the file object
-    // console.log("Request body:", req.body);  // Log the form data
-    
-    if(!req.file) {
-        return res.status(400).send('no file uploaded');
-    }
-    let image_filename = `${req.file.filename}`;
+  // creates a new food item based on the client’s request.
+  const addfoodItems = addFoodData(req);
 
-    const food = new foodModel({
-        name:req.body.name,
-        description:req.body.description,
-        price:req.body.price,
-        category:req.body.category,
-        image:image_filename
-    })
-    try {
-        await food.save();
-        res.json({success:true,message:"Food added successfully"})
-    } catch (error) {
-        console.log(error);
-        res.json({success:false,message:"Food is not added"})
-    }
-}
+  try {
+    await addfoodItems.save();
+    res.status(200).json({ success: true, message: "Food added successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Food is not added" });
+  }
+};
 
 const listFood = async (req, res) => {
-    try {
-        const foods = await foodModel.find({});
-        res.json({success:true,data:foods});
-    } catch (error) {
-        console.log(error);
-        res.json({success:false,message:"Error"});
-    }
-}
+  try {
+    const foodList = await listFoodItems();
+    res.json({ success: true, data: foodList });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Error" });
+  }
+};
 
-const removeFood = async(req,res) => {
-    try {
-        const food = await foodModel.findById(req.body.id);
-        //to delete image from file system
-        fs.unlink(`uploads/${food.image}`,()=>{});
+const removeFood = async (req, res) => {
+  try {
+    const removeItem = await getFoodItem(req.body.id);
+    //to delete image from file system
+    fs.unlink(`uploads/${removeItem.image}`, () => {});
 
-        await foodModel.findByIdAndDelete(req.body.id);
-        res.json({success: true, message:"Food removed sucessfully"})
-    } catch (error) {
-        console.log(error);
-        res.json({success:false,message:"Food not removed"})
-    }
-}
+    await removeFoodItem(req.body.id);
+    res.json({ success: true, message: "Food removed sucessfully" });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: "Food not removed" });
+  }
+};
 
-export {addFood, listFood, removeFood}
+export { addFood, listFood, removeFood };

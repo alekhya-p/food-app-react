@@ -7,6 +7,8 @@ import "dotenv/config";
 import cartRouter from "./routes/cartRoute.js";
 import orderRouter from "./routes/orderRoute.js";
 
+import fs from "fs";
+
 // Swagger
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
@@ -34,10 +36,10 @@ app.get("/", (req, res) => {
 });
 
 // Swagger setup
-const swaggerDocument = YAML.load('./swagger.yaml');
+// const swaggerDocument = YAML.load('./swagger.yaml');
 
-console.log(swaggerDocument); // Log the loaded document
-
+const file = fs.readFileSync('./swagger.yaml', 'utf8');
+const swaggerDocument = YAML.parse(file);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Error handling middleware

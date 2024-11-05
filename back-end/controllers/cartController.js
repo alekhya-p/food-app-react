@@ -1,8 +1,9 @@
-import userModel from "../models/userModal.js";
+import userModel from "../models/userModel.js";
+import { getUserById, updateUserCart } from "../repositories/userRepositories.js";
 
 const addToCart = async (req, res) => {
   try {
-    let userData = await userModel.findById(req.body.userId);
+    let userData = await getUserById(req.body.userId);
 
     // Initialize cartData if it doesn't exist
     let cartData = await userData.cartData || {};
@@ -13,7 +14,7 @@ const addToCart = async (req, res) => {
     } else {
       cartData[req.body.itemId] += 1;
     }
-    await userModel.findByIdAndUpdate(req.body.userId, { cartData });
+    await updateUserCart(req.body.userId, cartData);
     res.json({ success: true, message: "Added To Cart" });
   } catch (error) {
     console.log(error);
@@ -23,12 +24,12 @@ const addToCart = async (req, res) => {
 
 const removeFromCart = async (req, res) => {
     try {
-        let userData = await userModel.findById(req.body.userId);
+        let userData = await getUserById(req.body.userId);
         let cartData = await userData.cartData;
         if (cartData[req.body.itemId]>0) {
             cartData[req.body.itemId] -= 1;
         }
-        await userModel.findByIdAndUpdate(req.body.userId,{cartData})
+        await updateUserCart(req.body.userId, cartData);
         res.json({success:'true',message: "Removed from the cart"})
     } catch (error) {
         console.log(error);
